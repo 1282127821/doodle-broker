@@ -8,21 +8,22 @@
     <groupId>org.doodle</groupId>
     <artifactId>doodle-broker-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>doodle-broker-parent/pom.xml</relativePath>
+    <relativePath>../doodle-broker-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>doodle-broker</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>doodle-broker-vaadin</artifactId>
   <properties>
+    <spotless-maven-plugin.skip>false</spotless-maven-plugin.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
-  <modules>
-    <module>doodle-broker-autoconfigure</module>
-    <module>doodle-broker-dependencies</module>
-    <module>doodle-broker-parent</module>
-    <module>doodle-broker-server</module>
-    <module>doodle-broker-server-core</module>
-    <module>doodle-broker-starters</module>
-    <module>doodle-broker-vaadin</module>
-    <module>doodle-broker-vaadin-core</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.doodle</groupId>
+      <artifactId>doodle-broker-starter-vaadin</artifactId>
+    </dependency>
+  </dependencies>
 </project>
