@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.server;
+package org.doodle.broker.client;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = BrokerServerProperties.PREFIX)
-public class BrokerServerProperties {
-  public static final String PREFIX = "doodle.broker.server";
+@ConfigurationProperties(prefix = BrokerClientProperties.PREFIX)
+public class BrokerClientProperties {
+  public static final String PREFIX = "doodle.broker.client";
 }

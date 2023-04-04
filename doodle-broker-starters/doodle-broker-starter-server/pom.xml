@@ -13,8 +13,8 @@
   <artifactId>doodle-broker-starter-server</artifactId>
   <dependencies>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
+      <groupId>org.doodle</groupId>
+      <artifactId>doodle-boot-starter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.doodle</groupId>

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.server;
+package org.doodle.broker.autoconfigure.client;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.doodle.broker.client.BrokerClientProperties;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@Data
-@ConfigurationProperties(prefix = BrokerServerProperties.PREFIX)
-public class BrokerServerProperties {
-  public static final String PREFIX = "doodle.broker.server";
-}
+@AutoConfiguration
+@ConditionalOnClass(BrokerClientProperties.class)
+@EnableConfigurationProperties(BrokerClientProperties.class)
+public class BrokerClientAutoConfiguration {}

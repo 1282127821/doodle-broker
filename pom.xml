@@ -17,6 +17,7 @@
   </properties>
   <modules>
     <module>doodle-broker-autoconfigure</module>
+    <module>doodle-broker-client-core</module>
     <module>doodle-broker-dependencies</module>
     <module>doodle-broker-parent</module>
     <module>doodle-broker-server</module>

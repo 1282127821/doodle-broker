@@ -1,2 +1,3 @@
+org.doodle.broker.autoconfigure.client.BrokerClientAutoConfiguration
 org.doodle.broker.autoconfigure.server.BrokerServerAutoConfiguration
 org.doodle.broker.autoconfigure.vaadin.BrokerVaadinAutoConfiguration

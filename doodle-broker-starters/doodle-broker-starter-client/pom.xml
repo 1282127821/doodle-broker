@@ -6,32 +6,23 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.doodle</groupId>
-    <artifactId>doodle-broker-parent</artifactId>
+    <artifactId>doodle-broker-starters</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../doodle-broker-parent/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>doodle-broker-autoconfigure</artifactId>
-  <properties>
-    <spotless-maven-plugin.skip>false</spotless-maven-plugin.skip>
-  </properties>
+  <artifactId>doodle-broker-starter-client</artifactId>
   <dependencies>
     <dependency>
       <groupId>org.doodle</groupId>
-      <artifactId>doodle-boot-autoconfigure</artifactId>
+      <artifactId>doodle-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.doodle</groupId>
+      <artifactId>doodle-broker-autoconfigure</artifactId>
     </dependency>
     <dependency>
       <groupId>org.doodle</groupId>
       <artifactId>doodle-broker-client-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.doodle</groupId>
-      <artifactId>doodle-broker-server-core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.doodle</groupId>
-      <artifactId>doodle-broker-vaadin-core</artifactId>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
