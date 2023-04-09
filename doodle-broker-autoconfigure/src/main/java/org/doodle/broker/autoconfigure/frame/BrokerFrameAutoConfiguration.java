@@ -78,4 +78,11 @@ public class BrokerFrameAutoConfiguration {
       ObjectProvider<BrokerRSocketLocator> provider) {
     return new CompositeBrokerRSocketLocator(provider.orderedStream().toList());
   }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerRoutingRSocketFactory brokerRoutingRSocketFactory(
+      CompositeBrokerRSocketLocator locator, BrokerFrameExtractor frameExtractor) {
+    return new BrokerRoutingRSocketFactory(locator, frameExtractor);
+  }
 }

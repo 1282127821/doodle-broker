@@ -16,14 +16,15 @@
 package org.doodle.broker.autoconfigure.server;
 
 import org.doodle.broker.autoconfigure.frame.BrokerFrameAutoConfiguration;
+import org.doodle.broker.design.frame.BrokerFrame;
 import org.doodle.broker.server.BrokerServerAcceptor;
 import org.doodle.broker.server.BrokerServerFactory;
 import org.doodle.broker.server.BrokerServerProperties;
 import org.doodle.broker.server.context.BrokerServerBootstrap;
 import org.doodle.broker.server.netty.NettyBrokerServerFactory;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
+import org.doodle.design.broker.frame.BrokerFrameMimeTypes;
 import org.doodle.design.broker.rsocket.BrokerRoutingRSocketFactory;
-import org.doodle.design.broker.rsocket.CompositeBrokerRSocketLocator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -32,6 +33,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.boot.rsocket.netty.NettyRSocketServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.rsocket.DefaultMetadataExtractor;
+import org.springframework.messaging.rsocket.MetadataExtractor;
+import org.springframework.messaging.rsocket.RSocketStrategies;
 
 @AutoConfiguration(after = BrokerFrameAutoConfiguration.class)
 @ConditionalOnClass(BrokerServerProperties.class)
@@ -39,11 +43,14 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(BrokerServerProperties.class)
 public class BrokerServerAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  public BrokerRoutingRSocketFactory brokerRoutingRSocketFactory(
-      CompositeBrokerRSocketLocator locator, BrokerFrameExtractor frameExtractor) {
-    return new BrokerRoutingRSocketFactory(locator, frameExtractor);
+  public BrokerServerAutoConfiguration(RSocketStrategies strategies) {
+    MetadataExtractor metadataExtractor = strategies.metadataExtractor();
+    if (metadataExtractor instanceof DefaultMetadataExtractor extractor) {
+      extractor.metadataToExtract(
+          BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE,
+          BrokerFrame.class,
+          BrokerFrameMimeTypes.BROKER_FRAME_METADATA_KEY);
+    }
   }
 
   @Bean
