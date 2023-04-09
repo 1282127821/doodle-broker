@@ -22,6 +22,8 @@ import org.doodle.broker.server.BrokerServerProperties;
 import org.doodle.broker.server.context.BrokerServerBootstrap;
 import org.doodle.broker.server.netty.NettyBrokerServerFactory;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
+import org.doodle.design.broker.rsocket.BrokerRoutingRSocketFactory;
+import org.doodle.design.broker.rsocket.CompositeBrokerRSocketLocator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -39,8 +41,16 @@ public class BrokerServerAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public BrokerServerAcceptor brokerServerAcceptor(BrokerFrameExtractor frameExtractor) {
-    return new BrokerServerAcceptor(frameExtractor);
+  public BrokerRoutingRSocketFactory brokerRoutingRSocketFactory(
+      CompositeBrokerRSocketLocator locator, BrokerFrameExtractor frameExtractor) {
+    return new BrokerRoutingRSocketFactory(locator, frameExtractor);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerServerAcceptor brokerServerAcceptor(
+      BrokerFrameExtractor frameExtractor, BrokerRoutingRSocketFactory factory) {
+    return new BrokerServerAcceptor(frameExtractor, factory);
   }
 
   @Bean

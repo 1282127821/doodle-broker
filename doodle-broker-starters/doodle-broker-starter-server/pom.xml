@@ -24,5 +24,9 @@
       <groupId>org.doodle</groupId>
       <artifactId>doodle-broker-server-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.rsocket</groupId>
+      <artifactId>rsocket-transport-netty</artifactId>
+    </dependency>
   </dependencies>
 </project>
