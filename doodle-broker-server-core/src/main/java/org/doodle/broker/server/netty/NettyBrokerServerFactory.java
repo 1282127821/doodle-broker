@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.autoconfigure.client;
+package org.doodle.broker.server.netty;
 
-import org.doodle.broker.autoconfigure.frame.BrokerFrameAutoConfiguration;
-import org.doodle.broker.client.BrokerClientProperties;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import lombok.AllArgsConstructor;
+import org.doodle.broker.server.BrokerServer;
+import org.doodle.broker.server.BrokerServerAcceptor;
+import org.doodle.broker.server.BrokerServerFactory;
+import org.springframework.boot.rsocket.server.RSocketServerFactory;
 
-@AutoConfiguration(after = BrokerFrameAutoConfiguration.class)
-@ConditionalOnClass(BrokerClientProperties.class)
-@EnableConfigurationProperties(BrokerClientProperties.class)
-public class BrokerClientAutoConfiguration {}
+@AllArgsConstructor
+public class NettyBrokerServerFactory implements BrokerServerFactory {
+
+  private final RSocketServerFactory serverFactory;
+
+  @Override
+  public BrokerServer create(BrokerServerAcceptor serverAcceptor) {
+    return new NettyBrokerServer(serverFactory.create(serverAcceptor));
+  }
+}

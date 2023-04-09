@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.autoconfigure.client;
+package org.doodle.broker.server.context;
 
-import org.doodle.broker.autoconfigure.frame.BrokerFrameAutoConfiguration;
-import org.doodle.broker.client.BrokerClientProperties;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.doodle.broker.server.BrokerServer;
+import org.springframework.context.ApplicationEvent;
 
-@AutoConfiguration(after = BrokerFrameAutoConfiguration.class)
-@ConditionalOnClass(BrokerClientProperties.class)
-@EnableConfigurationProperties(BrokerClientProperties.class)
-public class BrokerClientAutoConfiguration {}
+/** Broker 服务启动发布事件 */
+public class BrokerServerInitializedEvent extends ApplicationEvent {
+
+  public BrokerServerInitializedEvent(BrokerServer brokerServer) {
+    super(brokerServer);
+  }
+
+  public BrokerServer getServer() {
+    return getSource();
+  }
+
+  @Override
+  public BrokerServer getSource() {
+    return (BrokerServer) super.getSource();
+  }
+}

@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.autoconfigure.client;
+package org.doodle.broker.server;
 
-import org.doodle.broker.autoconfigure.frame.BrokerFrameAutoConfiguration;
-import org.doodle.broker.client.BrokerClientProperties;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-@AutoConfiguration(after = BrokerFrameAutoConfiguration.class)
-@ConditionalOnClass(BrokerClientProperties.class)
-@EnableConfigurationProperties(BrokerClientProperties.class)
-public class BrokerClientAutoConfiguration {}
+@FunctionalInterface
+public interface BrokerServerFactory {
+  BrokerServer create(BrokerServerAcceptor serverAcceptor);
+}

@@ -15,26 +15,6 @@
  */
 package org.doodle.broker.server;
 
-import java.net.InetAddress;
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.rsocket.server.RSocketServer;
-import org.springframework.boot.web.server.Ssl;
-import org.springframework.util.unit.DataSize;
 
-@Data
-@ConfigurationProperties(prefix = BrokerServerProperties.PREFIX)
-public class BrokerServerProperties {
-  public static final String PREFIX = "doodle.broker.server";
-
-  private Integer port;
-
-  private InetAddress address;
-
-  private RSocketServer.Transport transport = RSocketServer.Transport.TCP;
-
-  private DataSize fragmentSize;
-
-  @NestedConfigurationProperty private Ssl ssl;
-}
+public interface BrokerServer extends RSocketServer {}
