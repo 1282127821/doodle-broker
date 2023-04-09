@@ -19,6 +19,10 @@ import com.google.protobuf.Message;
 import org.doodle.design.broker.frame.BrokerFrameDecoder;
 import org.doodle.design.broker.frame.BrokerFrameEncoder;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
+import org.doodle.design.broker.rsocket.BrokerRSocketQuery;
+import org.doodle.design.broker.rsocket.CombinedBrokerRSocketQuery;
+import org.doodle.design.broker.rsocket.MulticastBrokerBrokerRSocketLocator;
+import org.doodle.design.broker.rsocket.UnicastBrokerBrokerRSocketLocator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -48,5 +52,25 @@ public class BrokerFrameAutoConfiguration {
   @ConditionalOnMissingBean
   public BrokerFrameExtractor brokerFrameExtractor(RSocketStrategies strategies) {
     return new BrokerFrameExtractor(strategies);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerRSocketQuery brokerRSocketQuery() {
+    return new CombinedBrokerRSocketQuery();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public UnicastBrokerBrokerRSocketLocator unicastBrokerBrokerRSocketLocator(
+      BrokerRSocketQuery query) {
+    return new UnicastBrokerBrokerRSocketLocator(query);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public MulticastBrokerBrokerRSocketLocator multicastBrokerBrokerRSocketLocator(
+      BrokerRSocketQuery query) {
+    return new MulticastBrokerBrokerRSocketLocator(query);
   }
 }

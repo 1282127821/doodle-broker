@@ -23,26 +23,42 @@ import lombok.extern.slf4j.Slf4j;
 import org.doodle.broker.design.frame.BrokerFrame;
 import org.doodle.broker.design.frame.RouteSetup;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
+import org.doodle.design.broker.rsocket.BrokerRoutingRSocketFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @AllArgsConstructor
 public class BrokerServerAcceptor implements SocketAcceptor {
-
   private final BrokerFrameExtractor frameExtractor;
+  private final BrokerRoutingRSocketFactory factory;
 
   @Override
   public Mono<RSocket> accept(ConnectionSetupPayload setupPayload, RSocket sendingSocket) {
     try {
       BrokerFrame brokerFrame = this.frameExtractor.apply(setupPayload);
+      Runnable cleanup = () -> cleanup(brokerFrame);
       if (brokerFrame.getKindCase() == BrokerFrame.KindCase.SETUP) {
         RouteSetup routeSetup = brokerFrame.getSetup();
       }
-
-      return Mono.empty();
+      return Mono.defer(
+          () -> {
+            // TODO: 2023/4/10 处理 setup 注册
+            return finalize(sendingSocket, cleanup);
+          });
     } catch (Throwable t) {
       log.error("处理 SetupPayload 的时候发生错误", t);
       return Mono.error(t);
     }
   }
+
+  private Mono<RSocket> finalize(RSocket sendingRSocket, Runnable cleanup) {
+    RSocket receivingRSocket = factory.create();
+    Flux.firstWithSignal(receivingRSocket.onClose(), sendingRSocket.onClose())
+        .doFinally(s -> cleanup.run())
+        .subscribe();
+    return Mono.just(receivingRSocket);
+  }
+
+  private void cleanup(BrokerFrame brokerFrame) {}
 }
