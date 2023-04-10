@@ -60,16 +60,14 @@ public class BrokerFrameAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public UnicastBrokerBrokerRSocketLocator unicastBrokerBrokerRSocketLocator(
-      BrokerRSocketQuery query) {
-    return new UnicastBrokerBrokerRSocketLocator(query);
+  public UnicastBrokerRSocketLocator unicastBrokerRSocketLocator(BrokerRSocketQuery query) {
+    return new UnicastBrokerRSocketLocator(query);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public MulticastBrokerBrokerRSocketLocator multicastBrokerBrokerRSocketLocator(
-      BrokerRSocketQuery query) {
-    return new MulticastBrokerBrokerRSocketLocator(query);
+  public MulticastBrokerRSocketLocator multicastBrokerRSocketLocator(BrokerRSocketQuery query) {
+    return new MulticastBrokerRSocketLocator(query);
   }
 
   @Bean
