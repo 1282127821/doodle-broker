@@ -15,13 +15,11 @@
  */
 package org.doodle.broker.vaadin.single;
 
-import com.vaadin.flow.spring.annotation.EnableVaadin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
-@EnableVaadin("org.doodle.boot.vaadin.views")
 @SpringBootApplication
 public class BrokerVaadinApplication {
   public static void main(String[] args) {
