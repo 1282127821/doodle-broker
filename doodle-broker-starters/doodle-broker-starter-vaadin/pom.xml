@@ -14,15 +14,15 @@
   <dependencies>
     <dependency>
       <groupId>org.doodle</groupId>
-      <artifactId>doodle-boot-starter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.doodle</groupId>
       <artifactId>doodle-broker-autoconfigure</artifactId>
     </dependency>
     <dependency>
       <groupId>org.doodle</groupId>
       <artifactId>doodle-broker-vaadin-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.doodle</groupId>
+      <artifactId>doodle-boot-starter-vaadin</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -19,5 +19,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "doodle.broker.vaadin")
-public class BrokerVaadinProperties {}
+@ConfigurationProperties(prefix = BrokerVaadinProperties.PREFIX)
+public class BrokerVaadinProperties {
+  public static final String PREFIX = "doodle.broker.vaadin";
+}

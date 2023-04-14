@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.doodle.broker.design.frame.BrokerFrame;
 import org.doodle.broker.design.frame.RouteSetup;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
+import org.doodle.design.broker.rsocket.BrokerRSocketIndex;
 import org.doodle.design.broker.rsocket.BrokerRoutingRSocketFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,6 +33,7 @@ import reactor.core.publisher.Mono;
 public class BrokerServerAcceptor implements SocketAcceptor {
   private final BrokerFrameExtractor frameExtractor;
   private final BrokerRoutingRSocketFactory factory;
+  private final BrokerRSocketIndex rSocketIndex;
 
   @Override
   public Mono<RSocket> accept(ConnectionSetupPayload setupPayload, RSocket sendingSocket) {
@@ -40,12 +42,14 @@ public class BrokerServerAcceptor implements SocketAcceptor {
       Runnable cleanup = () -> cleanup(brokerFrame);
       if (brokerFrame.getKindCase() == BrokerFrame.KindCase.SETUP) {
         RouteSetup routeSetup = brokerFrame.getSetup();
+        return Mono.defer(
+            () -> {
+              this.rSocketIndex.put(routeSetup.getRouteId(), sendingSocket, routeSetup.getTags());
+              return finalize(sendingSocket, cleanup);
+            });
       }
-      return Mono.defer(
-          () -> {
-            // TODO: 2023/4/10 处理 setup 注册
-            return finalize(sendingSocket, cleanup);
-          });
+      throw new IllegalArgumentException("必须先发送 Setup");
+
     } catch (Throwable t) {
       log.error("处理 SetupPayload 的时候发生错误", t);
       return Mono.error(t);
@@ -60,5 +64,10 @@ public class BrokerServerAcceptor implements SocketAcceptor {
     return Mono.just(receivingRSocket);
   }
 
-  private void cleanup(BrokerFrame brokerFrame) {}
+  private void cleanup(BrokerFrame brokerFrame) {
+    if (brokerFrame.getKindCase() == BrokerFrame.KindCase.SETUP) {
+      RouteSetup setup = brokerFrame.getSetup();
+      this.rSocketIndex.remove(setup.getRouteId());
+    }
+  }
 }

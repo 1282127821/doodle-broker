@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.autoconfigure.frame;
+package org.doodle.broker.autoconfigure.rsocket;
 
 import com.google.protobuf.Message;
 import org.doodle.design.broker.frame.BrokerFrameDecoder;
@@ -38,7 +38,7 @@ import org.springframework.messaging.rsocket.RSocketStrategies;
   ProtobufEncoder.class,
   ProtobufDecoder.class
 })
-public class BrokerFrameAutoConfiguration {
+public class BrokerRSocketAutoConfiguration {
 
   @Bean
   public RSocketStrategiesCustomizer rSocketStrategiesCustomizer() {
@@ -54,8 +54,14 @@ public class BrokerFrameAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public BrokerRSocketQuery brokerRSocketQuery() {
-    return new CombinedBrokerRSocketQuery();
+  public BrokerRSocketIndex brokerRSocketIndex() {
+    return new BrokerRSocketIndex();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerRSocketQuery brokerRSocketQuery(BrokerRSocketIndex rSocketIndex) {
+    return new CombinedBrokerRSocketQuery(rSocketIndex);
   }
 
   @Bean

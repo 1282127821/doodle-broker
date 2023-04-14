@@ -8,3 +8,5 @@
 # Apache Maven
 target/
 
+# Vaadin
+frontend/
