@@ -29,7 +29,9 @@ import org.springframework.boot.rsocket.messaging.RSocketStrategiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.protobuf.ProtobufDecoder;
 import org.springframework.http.codec.protobuf.ProtobufEncoder;
+import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketStrategies;
+import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 
 @AutoConfiguration(before = RSocketStrategiesAutoConfiguration.class)
 @ConditionalOnClass({
@@ -44,6 +46,13 @@ public class BrokerRSocketAutoConfiguration {
   public RSocketStrategiesCustomizer rSocketStrategiesCustomizer() {
     return (strategies) ->
         strategies.encoder(new BrokerFrameEncoder()).decoder(new BrokerFrameDecoder());
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public RSocketConnectorConfigurer rSocketConnectorConfigurer(
+      RSocketMessageHandler messageHandler) {
+    return (connector) -> connector.acceptor(messageHandler.responder());
   }
 
   @Bean

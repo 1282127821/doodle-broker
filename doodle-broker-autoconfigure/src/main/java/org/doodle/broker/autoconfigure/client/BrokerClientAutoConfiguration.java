@@ -17,11 +17,46 @@ package org.doodle.broker.autoconfigure.client;
 
 import org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration;
 import org.doodle.broker.client.BrokerClientProperties;
+import org.doodle.broker.client.BrokerClientRSocketRequesterBuilder;
+import org.doodle.broker.design.frame.RouteSetup;
+import org.doodle.broker.design.frame.Tags;
+import org.doodle.design.broker.frame.BrokerFrameMimeTypes;
+import org.doodle.design.broker.rsocket.BrokerRSocketRequester;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
+import org.springframework.messaging.rsocket.RSocketRequester;
+import org.springframework.messaging.rsocket.RSocketStrategies;
+import org.springframework.util.MimeTypeUtils;
 
 @AutoConfiguration(after = BrokerRSocketAutoConfiguration.class)
 @ConditionalOnClass(BrokerClientProperties.class)
 @EnableConfigurationProperties(BrokerClientProperties.class)
-public class BrokerClientAutoConfiguration {}
+public class BrokerClientAutoConfiguration {
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerRSocketRequester.Builder brokerRSocketRequesterBuilder(
+      BrokerClientProperties properties,
+      RSocketStrategies strategies,
+      RSocketConnectorConfigurer configurer) {
+    Tags.Builder tags = Tags.newBuilder().putAllTag(properties.getTags());
+    RouteSetup setup = RouteSetup.newBuilder().setTags(tags).build();
+    RSocketRequester.Builder builder =
+        RSocketRequester.builder()
+            .setupMetadata(setup, BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
+            .dataMimeType(MimeTypeUtils.APPLICATION_JSON)
+            .rsocketStrategies(strategies)
+            .rsocketConnector(configurer);
+    return new BrokerClientRSocketRequesterBuilder(builder);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerRSocketRequester brokerRSocketRequester(BrokerRSocketRequester.Builder builder) {
+    return null;
+  }
+}

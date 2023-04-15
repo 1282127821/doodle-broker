@@ -15,11 +15,19 @@
  */
 package org.doodle.broker.client;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
 
 @Data
 @ConfigurationProperties(prefix = BrokerClientProperties.PREFIX)
 public class BrokerClientProperties {
   public static final String PREFIX = "doodle.broker.client";
+
+  private final Map<String, String> tags = new LinkedHashMap<>();
+
+  private MimeType dataMimeType = MimeTypeUtils.APPLICATION_JSON;
 }
