@@ -27,6 +27,11 @@
       </dependency>
       <dependency>
         <groupId>org.doodle</groupId>
+        <artifactId>doodle-broker-starter-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.doodle</groupId>
         <artifactId>doodle-broker-server-core</artifactId>
         <version>${project.version}</version>
       </dependency>
