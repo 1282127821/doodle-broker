@@ -18,6 +18,7 @@ package org.doodle.broker.autoconfigure.client;
 import org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration;
 import org.doodle.broker.client.BrokerClientProperties;
 import org.doodle.broker.client.BrokerClientRSocketRequesterBuilder;
+import org.doodle.broker.design.frame.BrokerFrame;
 import org.doodle.broker.design.frame.RouteSetup;
 import org.doodle.broker.design.frame.Tags;
 import org.doodle.design.broker.frame.BrokerFrameMimeTypes;
@@ -30,7 +31,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
-import org.springframework.util.MimeTypeUtils;
 
 @AutoConfiguration(after = BrokerRSocketAutoConfiguration.class)
 @ConditionalOnClass(BrokerClientProperties.class)
@@ -45,18 +45,13 @@ public class BrokerClientAutoConfiguration {
       RSocketConnectorConfigurer configurer) {
     Tags.Builder tags = Tags.newBuilder().putAllTag(properties.getTags());
     RouteSetup setup = RouteSetup.newBuilder().setTags(tags).build();
+    BrokerFrame frame = BrokerFrame.newBuilder().setSetup(setup).build();
     RSocketRequester.Builder builder =
         RSocketRequester.builder()
-            .setupMetadata(setup, BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
-            .dataMimeType(MimeTypeUtils.APPLICATION_JSON)
+            .setupMetadata(frame, BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
+            .dataMimeType(properties.getDataMimeType())
             .rsocketStrategies(strategies)
             .rsocketConnector(configurer);
     return new BrokerClientRSocketRequesterBuilder(builder);
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public BrokerRSocketRequester brokerRSocketRequester(BrokerRSocketRequester.Builder builder) {
-    return null;
   }
 }
