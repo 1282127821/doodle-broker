@@ -28,7 +28,7 @@ import org.springframework.util.unit.DataSize;
 public class BrokerServerProperties {
   public static final String PREFIX = "doodle.broker.server";
 
-  private Integer port;
+  private Integer port = 9899;
 
   private InetAddress address;
 

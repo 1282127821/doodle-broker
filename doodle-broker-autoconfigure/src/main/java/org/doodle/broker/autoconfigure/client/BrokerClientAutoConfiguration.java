@@ -73,6 +73,9 @@ public class BrokerClientAutoConfiguration {
             .findFirst()
             .map(factory -> factory.create(uri))
             .orElseThrow(() -> new IllegalStateException("找不到对应的驱动: " + uri));
-    return new BrokerClientRSocketRequester(builder.transport(clientTransport));
+    BrokerClientRSocketRequester requester =
+        new BrokerClientRSocketRequester(builder.transport(clientTransport));
+    requester.rsocketClient().source().subscribe();
+    return requester;
   }
 }

@@ -16,6 +16,7 @@
 package org.doodle.broker.autoconfigure.rsocket;
 
 import com.google.protobuf.Message;
+import java.time.Duration;
 import org.doodle.boot.rsocket.transport.NettyRSocketClientTransportFactory;
 import org.doodle.boot.rsocket.transport.RSocketClientTransportFactory;
 import org.doodle.design.broker.frame.BrokerFrameDecoder;
@@ -34,6 +35,7 @@ import org.springframework.http.codec.protobuf.ProtobufEncoder;
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
+import reactor.util.retry.Retry;
 
 @AutoConfiguration(before = RSocketStrategiesAutoConfiguration.class)
 @ConditionalOnClass({
@@ -59,7 +61,10 @@ public class BrokerRSocketAutoConfiguration {
   @ConditionalOnMissingBean
   public RSocketConnectorConfigurer rSocketConnectorConfigurer(
       RSocketMessageHandler messageHandler) {
-    return (connector) -> connector.acceptor(messageHandler.responder());
+    return (connector) ->
+        connector
+            .acceptor(messageHandler.responder())
+            .reconnect(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(2)));
   }
 
   @Bean

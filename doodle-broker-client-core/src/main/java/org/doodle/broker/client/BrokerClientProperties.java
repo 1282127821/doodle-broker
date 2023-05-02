@@ -32,7 +32,5 @@ public class BrokerClientProperties {
 
   private MimeType dataMimeType = MimeTypeUtils.APPLICATION_JSON;
 
-  private URI uri = URI.create("tcp://localhost:9891");
-
-  private boolean autoConnect = true;
+  private URI uri = URI.create("tcp://localhost:9899");
 }
