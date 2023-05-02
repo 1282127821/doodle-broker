@@ -33,5 +33,10 @@
       <artifactId>doodle-broker-vaadin-core</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.doodle</groupId>
+      <artifactId>doodle-boot-rsocket-core</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 </project>

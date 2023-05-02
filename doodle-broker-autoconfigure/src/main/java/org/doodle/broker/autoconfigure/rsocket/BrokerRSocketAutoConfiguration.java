@@ -16,6 +16,8 @@
 package org.doodle.broker.autoconfigure.rsocket;
 
 import com.google.protobuf.Message;
+import org.doodle.boot.rsocket.transport.NettyRSocketClientTransportFactory;
+import org.doodle.boot.rsocket.transport.RSocketClientTransportFactory;
 import org.doodle.design.broker.frame.BrokerFrameDecoder;
 import org.doodle.design.broker.frame.BrokerFrameEncoder;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
@@ -41,6 +43,11 @@ import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHa
   ProtobufDecoder.class
 })
 public class BrokerRSocketAutoConfiguration {
+
+  @Bean
+  public RSocketClientTransportFactory rSocketClientTransportFactory() {
+    return new NettyRSocketClientTransportFactory();
+  }
 
   @Bean
   public RSocketStrategiesCustomizer rSocketStrategiesCustomizer() {

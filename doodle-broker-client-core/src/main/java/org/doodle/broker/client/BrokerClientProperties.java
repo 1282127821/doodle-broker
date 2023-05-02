@@ -15,6 +15,7 @@
  */
 package org.doodle.broker.client;
 
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.Data;
@@ -30,4 +31,8 @@ public class BrokerClientProperties {
   private final Map<String, String> tags = new LinkedHashMap<>();
 
   private MimeType dataMimeType = MimeTypeUtils.APPLICATION_JSON;
+
+  private URI uri = URI.create("tcp://localhost:9891");
+
+  private boolean autoConnect = true;
 }

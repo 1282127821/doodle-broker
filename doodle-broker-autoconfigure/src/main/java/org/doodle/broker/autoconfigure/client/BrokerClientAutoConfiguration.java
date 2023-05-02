@@ -15,17 +15,21 @@
  */
 package org.doodle.broker.autoconfigure.client;
 
+import io.rsocket.transport.ClientTransport;
+import java.net.URI;
+import org.doodle.boot.rsocket.transport.RSocketClientTransportFactory;
 import org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration;
 import org.doodle.broker.client.BrokerClientProperties;
+import org.doodle.broker.client.BrokerClientRSocketRequester;
 import org.doodle.broker.client.BrokerClientRSocketRequesterBuilder;
-import org.doodle.broker.design.frame.BrokerFrame;
-import org.doodle.broker.design.frame.RouteSetup;
-import org.doodle.broker.design.frame.Tags;
 import org.doodle.design.broker.frame.BrokerFrameMimeTypes;
+import org.doodle.design.broker.frame.BrokerFrameUtils;
 import org.doodle.design.broker.rsocket.BrokerRSocketRequester;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
@@ -39,19 +43,36 @@ public class BrokerClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public BrokerRSocketRequester.Builder brokerRSocketRequesterBuilder(
+  public BrokerClientRSocketRequesterBuilder brokerClientRSocketRequesterBuilder(
       BrokerClientProperties properties,
       RSocketStrategies strategies,
       RSocketConnectorConfigurer configurer) {
-    Tags.Builder tags = Tags.newBuilder().putAllTag(properties.getTags());
-    RouteSetup setup = RouteSetup.newBuilder().setTags(tags).build();
-    BrokerFrame frame = BrokerFrame.newBuilder().setSetup(setup).build();
     RSocketRequester.Builder builder =
         RSocketRequester.builder()
-            .setupMetadata(frame, BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
+            .setupMetadata(
+                BrokerFrameUtils.setup(properties.getTags()),
+                BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
             .dataMimeType(properties.getDataMimeType())
             .rsocketStrategies(strategies)
             .rsocketConnector(configurer);
     return new BrokerClientRSocketRequesterBuilder(builder);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = ".enabled")
+  public BrokerClientRSocketRequester brokerClientRSocketRequester(
+      BrokerRSocketRequester.Builder builder,
+      BrokerClientProperties properties,
+      ObjectProvider<RSocketClientTransportFactory> provider) {
+    URI uri = properties.getUri();
+    ClientTransport clientTransport =
+        provider
+            .orderedStream()
+            .filter(factory -> factory.supports(uri))
+            .findFirst()
+            .map(factory -> factory.create(uri))
+            .orElseThrow(() -> new IllegalStateException("找不到对应的驱动: " + uri));
+    return new BrokerClientRSocketRequester(builder.transport(clientTransport));
   }
 }
