@@ -15,8 +15,10 @@
  */
 package org.doodle.broker.autoconfigure.client;
 
+import io.rsocket.RSocket;
 import io.rsocket.transport.ClientTransport;
 import java.net.URI;
+import java.time.Duration;
 import org.doodle.boot.rsocket.transport.RSocketClientTransportFactory;
 import org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration;
 import org.doodle.broker.client.BrokerClientProperties;
@@ -35,6 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
+import reactor.util.retry.Retry;
 
 @AutoConfiguration(after = BrokerRSocketAutoConfiguration.class)
 @ConditionalOnClass(BrokerClientProperties.class)
@@ -60,7 +63,7 @@ public class BrokerClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = ".enabled")
+  @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "enabled")
   public BrokerClientRSocketRequester brokerClientRSocketRequester(
       BrokerRSocketRequester.Builder builder,
       BrokerClientProperties properties,
@@ -75,7 +78,14 @@ public class BrokerClientAutoConfiguration {
             .orElseThrow(() -> new IllegalStateException("找不到对应的驱动: " + uri));
     BrokerClientRSocketRequester requester =
         new BrokerClientRSocketRequester(builder.transport(clientTransport));
-    requester.rsocketClient().source().subscribe();
+    requester
+        .rsocketClient()
+        .source()
+        .flatMap(RSocket::onClose)
+        .repeat()
+        .retryWhen(Retry.indefinitely())
+        .delayElements(Duration.ofSeconds(2))
+        .subscribe();
     return requester;
   }
 }
