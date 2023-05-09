@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.rsocket.RSocketMessagingAutoConfiguration;
-import org.springframework.boot.autoconfigure.rsocket.RSocketStrategiesAutoConfiguration;
 import org.springframework.boot.rsocket.messaging.RSocketStrategiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.protobuf.ProtobufDecoder;
@@ -38,9 +37,7 @@ import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 import reactor.util.retry.Retry;
 
-@AutoConfiguration(
-    before = RSocketStrategiesAutoConfiguration.class,
-    after = RSocketMessagingAutoConfiguration.class)
+@AutoConfiguration(after = RSocketMessagingAutoConfiguration.class)
 @ConditionalOnClass({
   Message.class,
   RSocketStrategies.class,
