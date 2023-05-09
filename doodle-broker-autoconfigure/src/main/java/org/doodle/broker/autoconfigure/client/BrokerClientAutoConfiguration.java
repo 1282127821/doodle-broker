@@ -42,6 +42,7 @@ import reactor.util.retry.Retry;
 @AutoConfiguration(after = BrokerRSocketAutoConfiguration.class)
 @ConditionalOnClass(BrokerClientProperties.class)
 @EnableConfigurationProperties(BrokerClientProperties.class)
+@ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "enabled")
 public class BrokerClientAutoConfiguration {
 
   @Bean
@@ -63,7 +64,7 @@ public class BrokerClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "enabled")
+  @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "auto-connected")
   public BrokerClientRSocketRequester brokerClientRSocketRequester(
       BrokerRSocketRequester.Builder builder,
       BrokerClientProperties properties,
