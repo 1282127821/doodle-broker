@@ -1,4 +1,5 @@
 org.doodle.broker.autoconfigure.client.BrokerClientAutoConfiguration
 org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration
+org.doodle.broker.autoconfigure.rsocket.BrokerRSocketStrategiesAutoConfiguration
 org.doodle.broker.autoconfigure.server.BrokerServerAutoConfiguration
 org.doodle.broker.autoconfigure.vaadin.BrokerVaadinAutoConfiguration

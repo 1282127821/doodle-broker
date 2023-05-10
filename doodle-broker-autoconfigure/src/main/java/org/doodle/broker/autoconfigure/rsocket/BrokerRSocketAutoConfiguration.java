@@ -16,28 +16,20 @@
 package org.doodle.broker.autoconfigure.rsocket;
 
 import com.google.protobuf.Message;
-import java.time.Duration;
 import org.doodle.boot.rsocket.transport.NettyRSocketClientTransportFactory;
 import org.doodle.boot.rsocket.transport.RSocketClientTransportFactory;
-import org.doodle.design.broker.frame.BrokerFrameDecoder;
-import org.doodle.design.broker.frame.BrokerFrameEncoder;
 import org.doodle.design.broker.frame.BrokerFrameExtractor;
 import org.doodle.design.broker.rsocket.*;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.rsocket.RSocketMessagingAutoConfiguration;
-import org.springframework.boot.rsocket.messaging.RSocketStrategiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.protobuf.ProtobufDecoder;
 import org.springframework.http.codec.protobuf.ProtobufEncoder;
-import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketStrategies;
-import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import reactor.util.retry.Retry;
 
-@AutoConfiguration(after = RSocketMessagingAutoConfiguration.class)
+@AutoConfiguration(after = BrokerRSocketStrategiesAutoConfiguration.class)
 @ConditionalOnClass({
   Message.class,
   RSocketStrategies.class,
@@ -49,22 +41,6 @@ public class BrokerRSocketAutoConfiguration {
   @Bean
   public RSocketClientTransportFactory rSocketClientTransportFactory() {
     return new NettyRSocketClientTransportFactory();
-  }
-
-  @Bean
-  public RSocketStrategiesCustomizer rSocketStrategiesCustomizer() {
-    return (strategies) ->
-        strategies.encoder(new BrokerFrameEncoder()).decoder(new BrokerFrameDecoder());
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public RSocketConnectorConfigurer rSocketConnectorConfigurer(
-      RSocketMessageHandler messageHandler) {
-    return (connector) ->
-        connector
-            .acceptor(messageHandler.responder())
-            .reconnect(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(2)));
   }
 
   @Bean

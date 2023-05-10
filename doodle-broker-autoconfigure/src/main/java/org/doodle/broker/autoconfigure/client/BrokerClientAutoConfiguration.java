@@ -34,9 +34,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.messaging.rsocket.RSocketConnectorConfigurer;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
+import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
 import reactor.util.retry.Retry;
 
 @AutoConfiguration(after = BrokerRSocketAutoConfiguration.class)
@@ -49,8 +49,8 @@ public class BrokerClientAutoConfiguration {
   @ConditionalOnMissingBean
   public BrokerClientRSocketRequesterBuilder brokerClientRSocketRequesterBuilder(
       BrokerClientProperties properties,
-      RSocketStrategies strategies,
-      RSocketConnectorConfigurer configurer) {
+      RSocketMessageHandler messageHandler,
+      RSocketStrategies strategies) {
     RSocketRequester.Builder builder =
         RSocketRequester.builder()
             .setupMetadata(
@@ -58,7 +58,11 @@ public class BrokerClientAutoConfiguration {
                 BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
             .dataMimeType(properties.getDataMimeType())
             .rsocketStrategies(strategies)
-            .rsocketConnector(configurer);
+            .rsocketConnector(
+                connector ->
+                    connector
+                        .acceptor(messageHandler.responder())
+                        .reconnect(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(2))));
     return new BrokerClientRSocketRequesterBuilder(builder);
   }
 
