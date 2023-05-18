@@ -21,9 +21,7 @@ import java.net.URI;
 import java.time.Duration;
 import org.doodle.boot.rsocket.transport.RSocketClientTransportFactory;
 import org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration;
-import org.doodle.broker.client.BrokerClientProperties;
-import org.doodle.broker.client.BrokerClientRSocketRequester;
-import org.doodle.broker.client.BrokerClientRSocketRequesterBuilder;
+import org.doodle.broker.client.*;
 import org.doodle.design.broker.frame.BrokerFrameMimeTypes;
 import org.doodle.design.broker.frame.BrokerFrameUtils;
 import org.doodle.design.broker.rsocket.BrokerRSocketRequester;
@@ -44,26 +42,40 @@ import reactor.util.retry.Retry;
 @EnableConfigurationProperties(BrokerClientProperties.class)
 @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "enabled")
 public class BrokerClientAutoConfiguration {
+  @Bean
+  public BrokerClientRSocketConnectorCustomizer brokerClientMessageHandlerCustomizer(
+      RSocketMessageHandler messageHandler) {
+    return connector -> connector.acceptor(messageHandler.responder());
+  }
+
+  @Bean
+  public BrokerClientRSocketConnectorCustomizer brokerClientReconnectRetryCustomizer() {
+    return connector ->
+        connector.reconnect(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(2)));
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public BrokerClientRSocketConnectorConfigurer brokerClientRSocketConnectorConfigurer(
+      ObjectProvider<BrokerClientRSocketConnectorCustomizer> provider) {
+    return connector ->
+        provider.orderedStream().forEach(customizer -> customizer.customize(connector));
+  }
 
   @Bean
   @ConditionalOnMissingBean
   public BrokerClientRSocketRequesterBuilder brokerClientRSocketRequesterBuilder(
       BrokerClientProperties properties,
-      RSocketMessageHandler messageHandler,
-      RSocketStrategies strategies) {
-    RSocketRequester.Builder builder =
+      RSocketStrategies strategies,
+      BrokerClientRSocketConnectorConfigurer connectorConfigurer) {
+    return new BrokerClientRSocketRequesterBuilder(
         RSocketRequester.builder()
             .setupMetadata(
                 BrokerFrameUtils.setup(properties.getTags()),
                 BrokerFrameMimeTypes.BROKER_FRAME_MIME_TYPE)
             .dataMimeType(properties.getDataMimeType())
             .rsocketStrategies(strategies)
-            .rsocketConnector(
-                connector ->
-                    connector
-                        .acceptor(messageHandler.responder())
-                        .reconnect(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(2))));
-    return new BrokerClientRSocketRequesterBuilder(builder);
+            .rsocketConnector(connectorConfigurer));
   }
 
   @Bean
