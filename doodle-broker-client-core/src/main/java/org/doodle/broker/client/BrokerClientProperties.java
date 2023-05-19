@@ -18,19 +18,28 @@ package org.doodle.broker.client;
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
-import org.springframework.util.MimeTypeUtils;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ConfigurationProperties(prefix = BrokerClientProperties.PREFIX)
 public class BrokerClientProperties {
   public static final String PREFIX = "doodle.broker.client";
 
-  private final Map<String, String> tags = new LinkedHashMap<>();
+  final Map<String, String> tags = new LinkedHashMap<>();
 
-  private MimeType dataMimeType = MimeTypeUtils.APPLICATION_JSON;
+  MimeType dataMimeType = MediaType.APPLICATION_PROTOBUF;
 
-  private URI uri = URI.create("tcp://localhost:9899");
+  final Server server = new Server();
+
+  @Data
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class Server {
+    URI uri = URI.create("tcp://localhost:9899");
+  }
 }

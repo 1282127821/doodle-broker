@@ -85,7 +85,7 @@ public class BrokerClientAutoConfiguration {
       BrokerRSocketRequester.Builder builder,
       BrokerClientProperties properties,
       ObjectProvider<RSocketClientTransportFactory> provider) {
-    URI uri = properties.getUri();
+    URI uri = properties.getServer().getUri();
     ClientTransport clientTransport =
         provider
             .orderedStream()
