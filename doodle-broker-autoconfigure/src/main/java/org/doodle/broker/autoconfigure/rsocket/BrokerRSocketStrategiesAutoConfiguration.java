@@ -18,11 +18,14 @@ package org.doodle.broker.autoconfigure.rsocket;
 import org.doodle.design.broker.frame.BrokerFrameDecoder;
 import org.doodle.design.broker.frame.BrokerFrameEncoder;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.rsocket.RSocketStrategiesAutoConfiguration;
 import org.springframework.boot.rsocket.messaging.RSocketStrategiesCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.rsocket.RSocketStrategies;
 
 @AutoConfiguration(before = RSocketStrategiesAutoConfiguration.class)
+@ConditionalOnClass({RSocketStrategies.class, BrokerFrameEncoder.class, BrokerFrameDecoder.class})
 public class BrokerRSocketStrategiesAutoConfiguration {
   @Bean
   public RSocketStrategiesCustomizer brokerFrameRSocketStrategiesCustomizer() {

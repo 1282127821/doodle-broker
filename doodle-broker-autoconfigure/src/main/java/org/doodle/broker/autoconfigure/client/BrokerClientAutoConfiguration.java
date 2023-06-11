@@ -38,7 +38,7 @@ import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHa
 import reactor.util.retry.Retry;
 
 @AutoConfiguration(after = BrokerRSocketAutoConfiguration.class)
-@ConditionalOnClass(BrokerClientProperties.class)
+@ConditionalOnClass({BrokerClientProperties.class, RSocketRequester.class, RSocketStrategies.class})
 @EnableConfigurationProperties(BrokerClientProperties.class)
 @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "enabled")
 public class BrokerClientAutoConfiguration {
