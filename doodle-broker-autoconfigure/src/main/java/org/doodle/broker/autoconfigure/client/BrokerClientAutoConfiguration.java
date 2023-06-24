@@ -24,7 +24,6 @@ import org.doodle.broker.autoconfigure.rsocket.BrokerRSocketAutoConfiguration;
 import org.doodle.broker.client.*;
 import org.doodle.design.broker.frame.BrokerFrameMimeTypes;
 import org.doodle.design.broker.frame.BrokerFrameUtils;
-import org.doodle.design.broker.rsocket.BrokerRSocketRequester;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -82,7 +81,7 @@ public class BrokerClientAutoConfiguration {
   @ConditionalOnMissingBean
   @ConditionalOnProperty(prefix = BrokerClientProperties.PREFIX, name = "auto-connected")
   public BrokerClientRSocketRequester brokerClientRSocketRequester(
-      BrokerRSocketRequester.Builder builder,
+      BrokerClientRSocketRequesterBuilder builder,
       BrokerClientProperties properties,
       ObjectProvider<RSocketClientTransportFactory> provider) {
     URI uri = properties.getServer().getUri();
