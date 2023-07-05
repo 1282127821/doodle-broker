@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.doodle.broker.vaadin;
+package org.doodle.broker.vaadin.views;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
+import org.doodle.boot.vaadin.views.MainLayout;
 
-@Data
-@ConfigurationProperties(prefix = BrokerVaadinProperties.PREFIX)
-public class BrokerVaadinProperties {
-  public static final String PREFIX = "doodle.broker.vaadin";
-
-  public static final String PREFIX_VIEWS = "org.doodle.broker.vaadin.views";
-}
+@RolesAllowed("BROKER_ADMIN")
+@PageTitle("Broker")
+@Route(value = "broker", layout = MainLayout.class)
+public class BrokerVaadinView extends VerticalLayout {}
