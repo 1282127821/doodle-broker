@@ -17,11 +17,8 @@ package org.doodle.broker.autoconfigure.vaadin;
 
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.router.RouterLink;
 import org.doodle.boot.vaadin.EnableVaadin;
 import org.doodle.boot.vaadin.views.SideNavItemSupplier;
-import org.doodle.boot.vaadin.views.TabSupplier;
 import org.doodle.broker.vaadin.BrokerVaadinProperties;
 import org.doodle.broker.vaadin.views.BrokerVaadinView;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
