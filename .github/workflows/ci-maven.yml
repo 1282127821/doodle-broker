@@ -25,6 +25,15 @@ jobs:
         run: ./mvnw install
         working-directory: org-doodle/doodle-build
 
+      - name: Checkout doodle-socket
+        uses: actions/checkout@v3
+        with:
+          repository: org-doodle/doodle-socket
+          path: org-doodle/doodle-socket
+      - name: Install doodle-socket
+        run: ./mvnw install
+        working-directory: org-doodle/doodle-socket
+
       - name: Checkout doodle-design
         uses: actions/checkout@v3
         with:
