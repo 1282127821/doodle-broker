@@ -16,9 +16,11 @@
 package org.doodle.broker.autoconfigure.vaadin;
 
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.RouterLink;
 import org.doodle.boot.vaadin.EnableVaadin;
+import org.doodle.boot.vaadin.views.SideNavItemSupplier;
 import org.doodle.boot.vaadin.views.TabSupplier;
 import org.doodle.broker.vaadin.BrokerVaadinProperties;
 import org.doodle.broker.vaadin.views.BrokerVaadinView;
@@ -34,8 +36,12 @@ import org.springframework.context.annotation.Bean;
 public class BrokerVaadinAutoConfiguration {
 
   @Bean
-  public TabSupplier brokerTabView() {
-    return (authenticationContext) ->
-        new Tab(VaadinIcon.CONNECT_O.create(), new RouterLink("路由网关", BrokerVaadinView.class));
+  public SideNavItemSupplier brokerSideNavView() {
+    return (authenticationContext) -> {
+      SideNavItem item = new SideNavItem("Broker组件");
+      item.setPrefixComponent(VaadinIcon.CONNECT_O.create());
+      item.addItem(new SideNavItem("服务节点", BrokerVaadinView.class, VaadinIcon.SERVER.create()));
+      return item;
+    };
   }
 }
