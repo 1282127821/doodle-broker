@@ -18,7 +18,7 @@ package org.doodle.broker.autoconfigure.vaadin;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import org.doodle.boot.vaadin.EnableVaadin;
-import org.doodle.boot.vaadin.views.SideNavItemSupplier;
+import org.doodle.boot.vaadin.views.VaadinSideNavItemSupplier;
 import org.doodle.broker.vaadin.BrokerVaadinProperties;
 import org.doodle.broker.vaadin.views.BrokerVaadinView;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Bean;
 public class BrokerVaadinAutoConfiguration {
 
   @Bean
-  public SideNavItemSupplier brokerSideNavView() {
+  public VaadinSideNavItemSupplier brokerSideNavView() {
     return (authenticationContext) -> {
       SideNavItem item = new SideNavItem("Broker组件");
       item.setPrefixComponent(VaadinIcon.CONNECT_O.create());

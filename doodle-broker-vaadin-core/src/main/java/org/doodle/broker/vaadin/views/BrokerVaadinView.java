@@ -19,9 +19,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
-import org.doodle.boot.vaadin.views.MainLayout;
+import org.doodle.boot.vaadin.views.VaadinMainLayout;
 
 @RolesAllowed("BROKER_ADMIN")
 @PageTitle("Broker")
-@Route(value = "broker", layout = MainLayout.class)
+@Route(value = "broker", layout = VaadinMainLayout.class)
 public class BrokerVaadinView extends VerticalLayout {}
