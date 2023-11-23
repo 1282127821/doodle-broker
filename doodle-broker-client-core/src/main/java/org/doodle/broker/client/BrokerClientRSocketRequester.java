@@ -45,7 +45,7 @@ public class BrokerClientRSocketRequester implements BrokerRSocketRequester {
 
   @Override
   public MimeType metadataMimeType() {
-    return this.requester.dataMimeType();
+    return this.requester.metadataMimeType();
   }
 
   @Override
